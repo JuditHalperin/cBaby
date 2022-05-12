@@ -3,6 +3,7 @@
 
 
 # import packages
+from twilio.rest import Client
 import speech_recognition as sr
 from PIL import ImageTk, Image
 import tkinter as tk
@@ -142,7 +143,7 @@ class SecondPage:
         if self.HALF_MIN > 0:  # if we started to count 0.5 min
             if self.HALF_MIN == 3:  # after 0.5 min
                 if len_faces == 0 and len_profile_faces == 0:  # if there is no face in the img- send a message
-                    self.alarm("Blanket over baby's face")
+                    self.alarm("blanket over baby's face")
                     self.HALF_MIN = 0
                 else:
                     self.HALF_MIN = 0  # else- we find face, restart the counter
@@ -266,9 +267,18 @@ class SecondPage:
         return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # get a message and call alarm_window
-    def alarm(self, msg):
+    def alarm(self, message):
         self.ALARM_ON = True  # turn the alarm on
-        threading.Thread(target=self.show_alert, args=(msg,), daemon=True).start()  # start a thread to show the alert text for a few seconds in the background
+
+        # alert text
+        threading.Thread(target=self.show_alert, args=(message,), daemon=True).start()  # start a thread to show the alert text for a few seconds in the background
+
+        # call and send message
+        from_number = "+13253356913"
+        to_number = "+972586468596"
+        client = Client("AC199fd330375e3b283e002502ab97145f", "2ff7f7222684bf3db26f90258727ca0f")
+        client.calls.create(to=to_number, from_=from_number, url="http://havanat.net/naama/test.xml", method="GET")
+        client.messages.create(to=to_number, from_=from_number, body="cBaby warning message: " + message)
 
     def on_close(self):
         """This function stops the video stream and the root when either the stop or the X button is pressed"""
