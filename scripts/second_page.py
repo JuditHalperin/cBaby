@@ -145,7 +145,7 @@ class SecondPage:
         face, len_faces, len_profile_faces = self.face_in_image(frame)   # call face_in-image function
 
         if self.HALF_MIN > 0:  # if we started to count 0.5 min
-            if self.HALF_MIN == 30:  # after 0.5 min
+            if self.HALF_MIN == 10:  # after 0.5 min
                 if len_faces == 0 and len_profile_faces == 0:  # if there is no face in the img- send a message
                     self.alarm("blanket over baby's face")
                     self.HALF_MIN = 0
@@ -211,7 +211,7 @@ class SecondPage:
                 first_color = self.color_frame1(first_frame)  # save the mean color of the face in the first frame
                 if first_color is None:
                     first_frame = None
-                    messagebox.showerror("Error", "No face detected.", parent=self.root)
+                    #messagebox.showerror("Error", "No face detected.", parent=self.root)
                     continue
 
             # see if a sufficient time passed since the previous frame was analysed
@@ -291,7 +291,7 @@ class SecondPage:
 def start():
     """This function starts the video stream and the loop"""
 
-    vs = VideoStream(src=0).start()  # start the video stream thread, 0 indicates index of webcam on system
+    vs = VideoStream(src=1).start()  # start the video stream thread, 0 indicates index of webcam on system
     time.sleep(5.0)  # pause for 5 seconds to allow the camera sensor to warm up
 
     dd = SecondPage(vs)  # start the loop
