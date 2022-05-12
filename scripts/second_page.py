@@ -5,6 +5,7 @@
 # import packages
 from imutils.video import VideoStream
 from PIL import ImageTk, Image
+import speech_recognition as sr
 from tkinter import messagebox
 import tkinter as tk
 import threading
@@ -48,8 +49,13 @@ class SecondPage:
         self.message.pack(side="top", expand="yes", padx=10, pady=10)
 
         # stop button
-        tk.Button(self.root, text="Bye", command=self.on_close, bg="#ABCAD5", font=("times new roman", 12)). \
-            pack(side="bottom", expand="yes", padx=10, pady=10)
+        self.button = tk.Button(self.root, text="Bye", command=self.on_close, bg="#ABCAD5", font=("times new roman", 12))
+        self.button.pack(side="bottom", expand="yes", padx=10, pady=10)
+
+        # Start a thread to hear the 'bye' command in the background
+        self.listen = True
+        self.query = None
+        threading.Thread(target=self.voice, daemon=True).start()
 
         # variables
         self.TWO_MINS = 0
@@ -231,6 +237,25 @@ class SecondPage:
             else:  # update the panel to show the frame
                 self.panel.configure(image=current_frame)
                 self.panel.image = current_frame
+
+    def __take_command(self):
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Listening...")
+            audio = r.listen(source)
+        print("Recognizing...")
+        try:
+            self.query = r.recognize_google(audio, language='en-in')
+            print(f"User said: {self.query}\n")
+            return self.query
+        except Exception:
+            return ""
+
+    def voice(self):
+        while self.listen:
+            self.query = self.__take_command().lower()
+            if 'bye' in self.query or 'by' in self.query or 'buy' in self.query:
+                self.button.invoke()  # button function without clicking
 
     def show_alert(self, text):
         """This function shows the alert message for a few seconds"""

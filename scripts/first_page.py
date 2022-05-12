@@ -1,8 +1,7 @@
 
 # GUI first page
 
-
-MODE = "video1"  # "live" or video name
+MODE = "live"  # "live" or video name
 
 
 # import packages
@@ -16,9 +15,6 @@ import datetime
 # import script
 import second_page
 import second_page_video
-
-
-LISTENNING = True
 
 
 class FirstPage:
@@ -46,9 +42,12 @@ class FirstPage:
         Label(info_page, text=self.get_text(), font=("Goudy pld style", 18), fg="#619BAF", bg="white").place(x=110, y=270)
 
         # start button
-        Button(self.root, command=self.start_function, text="Go", bg="#ABCAD5", font=("times new roman", 12)).place(x=155, y=330, width=90, height=30)
+        self.button = Button(self.root, command=self.start_function, text="Go", bg="#ABCAD5", font=("times new roman", 12))
+        self.button.place(x=155, y=330, width=90, height=30)
 
         # Start a thread to hear the 'go' command in the background
+        self.listen = True
+        self.query = None
         threading.Thread(target=self.voice, daemon=True).start()
 
         # infinite loop waiting for an event to occur and process the event as long as the window is not closed
@@ -66,24 +65,27 @@ class FirstPage:
     def __take_command(self):
         r = sr.Recognizer()
         with sr.Microphone() as source:
-            #r.pause_threshold = 1
+            print("Listening...")
             audio = r.listen(source)
-        return r.recognize_google(audio, language='en-in')
+        print("Recognizing...")
+        try:
+            self.query = r.recognize_google(audio, language='en-in')
+            print(f"User said: {self.query}\n")
+            return self.query
+        except Exception:
+            return ""
 
     def voice(self):
-        global LISTENNING
-        while LISTENNING:
-            query = self.__take_command().lower()
-            if 'go' in query:
-                #print(query)
-                #print('heard go')
-                self.start_function()
+        while self.listen:
+            self.query = self.__take_command().lower()
+            if 'go' in self.query:
+                self.button.invoke()  # button function without clicking
 
     def start_function(self):
-        global LISTENNING
-        LISTENNING = False
+        self.listen = False
         self.root.destroy()
 
+        # open second page
         if MODE == "live":
             second_page.start()
         else:
