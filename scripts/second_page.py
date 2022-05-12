@@ -7,7 +7,7 @@ from imutils.video import VideoStream
 from PIL import ImageTk, Image
 import speech_recognition as sr
 from tkinter import messagebox
-from twilio.rest import Client
+# from twilio.rest import Client
 import tkinter as tk
 import threading
 import datetime
@@ -46,11 +46,11 @@ class SecondPage:
         self.thread.start()
 
         # top message label
-        self.message = tk.Label(self.root, fg="#085768", text=f"Sweet Dreams!", font=('Goudy pld style', 20, 'bold'))
+        self.message = tk.Label(self.root, fg="#085768", text=f"Sweet Dreams!", font=('Goudy pld style', 30, 'bold'))
         self.message.pack(side="top", expand="yes", padx=10, pady=10)
 
         # stop button
-        self.button = tk.Button(self.root, text="Bye", command=self.on_close, bg="#ABCAD5", font=("times new roman", 12))
+        self.button = tk.Button(self.root, text="Bye", command=self.on_close, bg="#ABCAD5", font=("times new roman", 25))
         self.button.pack(side="bottom", expand="yes", padx=10, pady=10)
 
         # Start a thread to hear the 'bye' command in the background
@@ -202,7 +202,7 @@ class SecondPage:
         while not self.stop_event.is_set():  # while the app is not closed
 
             current_frame = self.vs.read()  # grab the frame from the threaded video file stream
-            current_frame = imutils.resize(current_frame, width=450)  # resize the frame
+            current_frame = imutils.resize(current_frame, width=620)  # resize the frame
             current_frame = cv2.cvtColor(current_frame, cv2.COLOR_BGR2RGB)  # convert from BGR (cv2 format) to RGB (tkinter format)
 
             if first_frame is None:
