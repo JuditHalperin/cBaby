@@ -237,7 +237,7 @@ class SecondPage:
                 self.panel.configure(image=current_frame)
                 self.panel.image = current_frame
 
-            cv2.waitKey(2)
+            cv2.waitKey(5)
 
     def __take_command(self):
         r = sr.Recognizer()
