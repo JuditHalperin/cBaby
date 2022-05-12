@@ -46,7 +46,7 @@ class SecondPage:
         self.message.pack(side="top", expand="yes", padx=10, pady=10)
 
         # stop button
-        self.button = tk.Button(self.root, text="Bye", command=self.on_close, bg="#ABCAD5", font=("times new roman", 12))
+        self.button = tk.Button(self.root, text="Bye", command=self.on_close, bg="#ABCAD5", font=("times new roman", 25))
         self.button.pack(side="bottom", expand="yes", padx=10, pady=10)
 
         # Start a thread to hear the 'bye' command in the background

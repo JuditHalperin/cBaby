@@ -7,7 +7,7 @@ from imutils.video import VideoStream
 from PIL import ImageTk, Image
 import speech_recognition as sr
 from tkinter import messagebox
-# from twilio.rest import Client
+from twilio.rest import Client
 import tkinter as tk
 import threading
 import datetime
@@ -292,7 +292,7 @@ def start():
     """This function starts the video stream and the loop"""
 
     vs = VideoStream(src=1).start()  # start the video stream thread, 0 indicates index of webcam on system
-    time.sleep(5.0)  # pause for 5 seconds to allow the camera sensor to warm up
+    time.sleep(1)  # pause for 5 seconds to allow the camera sensor to warm up
 
     dd = SecondPage(vs)  # start the loop
     dd.root.mainloop()  # infinite loop waiting for an event to occur and process the event as long as the window is not closed

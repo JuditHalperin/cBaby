@@ -11,6 +11,10 @@ from PIL import ImageTk
 from PIL import Image
 import speech_recognition as sr
 import datetime
+from playsound import playsound
+import time
+import cv2
+import keyboard
 
 # import script
 import second_page
@@ -48,7 +52,9 @@ class FirstPage:
         # Start a thread to hear the 'go' command in the background
         self.listen = True
         self.query = None
-        threading.Thread(target=self.voice, daemon=True).start()
+
+        threading.Thread(target=self.start_by_key, daemon=True).start()
+        #threading.Thread(target=self.voice, daemon=True).start()
 
         # infinite loop waiting for an event to occur and process the event as long as the window is not closed
         root.mainloop()
@@ -78,10 +84,23 @@ class FirstPage:
     def voice(self):
         while self.listen:
             self.query = self.__take_command().lower()
-            if 'go' in self.query:
+            if 'go' in self.query or 'gaon' in self.query:
+                self.button.invoke()  # button function without clicking
+
+    def start_by_key(self):
+        while self.listen:  # making a loop
+            if keyboard.is_pressed('a'):
+                self.button.invoke()  # button function without clicking
+            if keyboard.is_pressed('b'):
+                global MODE
+                MODE = "video1"
                 self.button.invoke()  # button function without clicking
 
     def start_function(self):
+
+        playsound("../data/sound.wav", False)
+        time.sleep(1)
+
         self.listen = False
         self.root.destroy()
 
