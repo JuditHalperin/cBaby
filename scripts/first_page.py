@@ -1,23 +1,23 @@
 
 # GUI first page
 
-MODE = "live"  # "live" or video name
+# Choose "live" or video name such as "video1" or "video2"
+MODE = "live"
 
 
 # import packages
-import threading
-from tkinter import *
-from PIL import ImageTk
-from PIL import Image
-import speech_recognition as sr
-import datetime
 from playsound import playsound
+import speech_recognition as sr
+from PIL import ImageTk
+from tkinter import *
+from PIL import Image
+import threading
+import datetime
 import time
-import cv2
 import keyboard
 
-# import script
-import second_page
+# import scripts
+import second_page_live
 import second_page_video
 
 
@@ -43,25 +43,25 @@ class FirstPage:
         Label(logo_frame, image=logo_image, background="white").pack()  # create a label widget to display the image
 
         # text label
-        Label(info_page, text=self.get_text(), font=("Goudy pld style", 18), fg="#619BAF", bg="white").place(x=110, y=270)
+        Label(info_page, text=self.__get_text(), font=("Goudy pld style", 18), fg="#619BAF", bg="white").place(x=110, y=270)
 
         # start button
         self.button = Button(self.root, command=self.start_function, text="Go", bg="#ABCAD5", font=("times new roman", 12))
         self.button.place(x=155, y=330, width=90, height=30)
 
-        # Start a thread to hear the 'go' command in the background
+        # thread to hear the 'go' command in the background
         self.listen = True
         self.query = None
+        threading.Thread(target=self.voice, daemon=True).start()
 
-        threading.Thread(target=self.start_by_key, daemon=True).start()
-        #threading.Thread(target=self.voice, daemon=True).start()
+        # threading.Thread(target=self.start_by_key, daemon=True).start()
 
         # infinite loop waiting for an event to occur and process the event as long as the window is not closed
         root.mainloop()
 
-    def get_text(self):
+    def __get_text(self):
+        """Top text by current time"""
         dt = datetime.datetime.now()
-        # dt = datetime.datetime(2014, 2, 10, 2, 39, 30, 768979)
         if datetime.time(5) <= dt.time() <= datetime.time(12):
             return 'Good Morning!'
         elif datetime.time(12) <= dt.time() <= datetime.time(18):
@@ -69,15 +69,19 @@ class FirstPage:
         return 'Good Night!'
 
     def __take_command(self):
+        """listen and recognize words"""
         r = sr.Recognizer()
+
         with sr.Microphone() as source:
             print("Listening...")
             audio = r.listen(source)
         print("Recognizing...")
+
         try:
             self.query = r.recognize_google(audio, language='en-in')
             print(f"User said: {self.query}\n")
             return self.query
+
         except Exception:
             return ""
 
@@ -87,26 +91,27 @@ class FirstPage:
             if 'go' in self.query or 'gaon' in self.query:
                 self.button.invoke()  # button function without clicking
 
+    """
     def start_by_key(self):
-        while self.listen:  # making a loop
-            if keyboard.is_pressed('a'):
+        while self.listen:
+            if keyboard.is_pressed('a'):  # start live
                 self.button.invoke()  # button function without clicking
-            if keyboard.is_pressed('b'):
+            elif keyboard.is_pressed('b'):  # start video
                 global MODE
                 MODE = "video1"
                 self.button.invoke()  # button function without clicking
+    """
 
     def start_function(self):
-
+        """When 'go' is pressed or said, play sound, destroy root and open second page according to MODE"""
         playsound("../data/sound.wav", False)
         time.sleep(1)
 
         self.listen = False
         self.root.destroy()
 
-        # open second page
         if MODE == "live":
-            second_page.start()
+            second_page_live.start()
         else:
             second_page_video.start(MODE)
 
