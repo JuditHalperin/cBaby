@@ -14,5 +14,5 @@ Bioinformatics Department, Jerusalem College of Technology
 
 May 2022
 
-We thank Shira Shwartz for helping us with the algorithm.
+We thank Shira Shwartz for helping us with the algorithm. 
 
